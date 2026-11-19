@@ -4,7 +4,8 @@ A private dashboard for the portfolio's visit logs: a world map of where visitor
 are, which ones keep coming back, and the full visit history for each one.
 
 It's a static site (HTML/CSS/JS, no build step). It reads from the
-`html-node-website` API's admin endpoints, which require a bearer token.
+`html-node-website` API's admin endpoints. They're public unless `ADMIN_TOKEN` is set
+on the API; then the dashboard shows a sign-in screen.
 
 ## How visitors are identified
 
@@ -25,14 +26,13 @@ accurate to the city or ISP hub, not a street address.
 ## Setup
 
 1. **On the API (Render → Environment):**
-   - `ADMIN_TOKEN`: a long random secret. Generate one with
+   - `ADMIN_TOKEN` (optional): leave unset for an open dashboard, or set a long random secret to require sign-in. Generate one with
      `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
    - If `CORS_ORIGIN` is set, add the dashboard's URL to it
      (e.g. `https://visitors-xyz.netlify.app`).
 2. **Host this folder** anywhere static: Netlify drop, Vercel, Cloudflare Pages,
    GitHub Pages (private repo + Pages), or a Render static site.
-3. Open it, keep the API URL, paste the token. Tick "Remember on this device"
-   to stay signed in.
+3. Open it. If a token is configured, paste it and tick "Remember on this device".
 
 ## Local preview
 
@@ -47,4 +47,4 @@ python3 -m http.server 8080
 - `GET /api/admin/visitors?days=30&minVisits=1&limit=500`: visitors grouped by ID, with totals
 - `GET /api/admin/visitors/:id/visits`: every visit for one visitor (newest first)
 
-Both need `Authorization: Bearer <ADMIN_TOKEN>`.
+Both need `Authorization: Bearer <ADMIN_TOKEN>` only when `ADMIN_TOKEN` is set.

@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	var DEFAULT_API = 'https://html-node-website.onrender.com';
+	var DEFAULT_API = 'https://steephen-api.onrender.com';
 	var KEY_URL = 'vd_api', KEY_TOKEN = 'vd_token';
 	var DEMO = new URLSearchParams(location.search).has('demo');
 
@@ -71,7 +71,7 @@
 	function request(path) {
 		if (DEMO) return Promise.resolve(demoResponse(path));
 		return fetch(api.url.replace(/\/+$/, '') + path, {
-			headers: { Authorization: 'Bearer ' + api.token },
+			headers: api.token ? { Authorization: 'Bearer ' + api.token } : {},
 			referrerPolicy: 'no-referrer',
 		}).then(function (r) {
 			return r.json().catch(function () { return {}; }).then(function (body) {
@@ -133,6 +133,7 @@
 	function openApp() {
 		$('login').hidden = true;
 		$('app').hidden = false;
+		$('logout').hidden = !api.token;
 		if (!map) initMap();
 		setTimeout(function () { map.invalidateSize(); }, 50);
 		load();
@@ -164,7 +165,7 @@
 				renderList();
 			})
 			.catch(function (err) {
-				if (err.status === 401) return showLogin('Session expired — sign in again.');
+				if (err.status === 401) return showLogin(api.token ? 'Session expired — sign in again.' : '');
 				$('status').textContent = 'Error: ' + err.message;
 			})
 			.finally(function () { $('refresh').classList.remove('spin'); });
@@ -423,5 +424,6 @@
 
 	api.url = getSaved(KEY_URL) || DEFAULT_API;
 	api.token = getSaved(KEY_TOKEN);
-	if (DEMO || api.token) openApp(); else showLogin();
+	// Try without a login first; the API only asks for a token (401) when ADMIN_TOKEN is set.
+	openApp();
 })();
