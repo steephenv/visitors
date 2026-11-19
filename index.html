@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="robots" content="noindex, nofollow">
+	<meta name="referrer" content="no-referrer">
+	<meta name="theme-color" content="#060608">
+	<title>Visitors Data</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+	<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+	<!-- Login -->
+	<section id="login" class="login" hidden>
+		<form id="login-form" class="login-card">
+			<div class="brand"><span>S</span>V <em>Visitors</em></div>
+			<h1>Sign in</h1>
+			<p class="muted">Enter the <code>ADMIN_TOKEN</code> configured on your API.</p>
+			<label class="field">
+				<span>API URL</span>
+				<input id="api-url" type="url" required autocomplete="url">
+			</label>
+			<label class="field">
+				<span>Admin token</span>
+				<input id="api-token" type="password" required autocomplete="current-password">
+			</label>
+			<label class="check"><input id="remember" type="checkbox"> Remember on this device</label>
+			<button class="btn" type="submit"><i class="bx bx-log-in"></i>Open dashboard</button>
+			<p id="login-error" class="error" role="alert"></p>
+		</form>
+	</section>
+
+	<!-- App -->
+	<div id="app" class="app" hidden>
+		<header class="topbar">
+			<div class="brand"><span>S</span>V <em>Visitors</em></div>
+			<div class="controls">
+				<select id="range" aria-label="Time range">
+					<option value="1">24 hours</option>
+					<option value="7">7 days</option>
+					<option value="30" selected>30 days</option>
+					<option value="90">90 days</option>
+					<option value="0">All time</option>
+				</select>
+				<button id="refresh" class="icon-btn" aria-label="Refresh"><i class="bx bx-refresh"></i></button>
+				<button id="logout" class="icon-btn" aria-label="Sign out"><i class="bx bx-log-out"></i></button>
+			</div>
+		</header>
+
+		<section class="kpis">
+			<div class="kpi"><strong id="k-visitors">–</strong><span>Visitors</span></div>
+			<div class="kpi"><strong id="k-visits">–</strong><span>Page views</span></div>
+			<div class="kpi accent"><strong id="k-returning">–</strong><span>Returning</span></div>
+			<div class="kpi"><strong id="k-countries">–</strong><span>Countries</span></div>
+		</section>
+
+		<section class="map-wrap">
+			<div id="map" class="map"></div>
+			<div class="legend">
+				<span><i class="lg new"></i>One-time</span>
+				<span><i class="lg ret"></i>Returning</span>
+				<span><i class="lg freq"></i>Frequent</span>
+			</div>
+		</section>
+
+		<section class="list-wrap">
+			<div class="list-head">
+				<h2>Visitors</h2>
+				<div class="filters" role="tablist">
+					<button class="chip active" data-filter="all">All</button>
+					<button class="chip" data-filter="returning">Returning</button>
+					<button class="chip" data-filter="frequent">Frequent</button>
+				</div>
+			</div>
+			<input id="search" class="search" type="search" placeholder="Search city, country, ISP, IP…">
+			<p id="status" class="muted status"></p>
+			<ul id="visitors" class="visitors"></ul>
+		</section>
+	</div>
+
+	<!-- Detail drawer -->
+	<aside id="drawer" class="drawer" aria-hidden="true">
+		<div class="drawer-scrim" data-close></div>
+		<div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="d-title">
+			<div class="drawer-grab"></div>
+			<button class="icon-btn drawer-close" data-close aria-label="Close"><i class="bx bx-x"></i></button>
+			<div id="drawer-body"></div>
+		</div>
+	</aside>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
